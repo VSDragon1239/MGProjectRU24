@@ -1,3 +1,4 @@
+from PySide6.QtWidgets import QListWidgetItem
 from PySide6.scripts.project_lib import project_data
 
 from MGProjectRU25.App.Data import PROJECTS, PROJECTS_VISUAL
@@ -54,10 +55,16 @@ class ProjectManager(SystemManager):
         print(IlonMaxYablochkinSkazal)
 
     def find_index_gp_by_ru_name(self, ru_name):
+        if type(ru_name) is QListWidgetItem:
+            ru_name = ru_name.text()
+        print("-1", ru_name)
         for i, item in enumerate(self.project_view_data_cache["GlobalProjectsData"]):
-            if item["GlobalProjectRuName"] == ru_name:
+            print("-0", item)
+            if item["GlobalProjectRuName"] == ru_name or item["GlobalProjectEnName"] == ru_name or item[
+                "GlobalProjectSlugName"] == ru_name:
                 return i
-        return -1
+        print("find_index_gp_by_ru_name", "Проект не найден")
+        return None
 
     def find_index_project_by_ru_name(self, gp_index, ru_name):
         for i, item in enumerate(self.project_view_data_cache["GlobalProjectsData"][gp_index]["Projects"]):
@@ -112,13 +119,14 @@ class ProjectManager(SystemManager):
             data_p[index + 1], data_p[index] = data_p[index], data_p[index + 1]
         self.safe_projects_visual()
 
-
     def safe_projects(self):
-        if self.project_data_cache != self.projects_file.read_file():
+        print("safe_projects", self.project_data_cache, self.projects_file.read_file()[1])
+        if self.project_data_cache != self.projects_file.read_file()[1]:
+            print("safe_projects", self.project_data_cache != self.projects_file.read_file()[1])
             self.projects_file.write_file(self.project_data_cache)
 
     def safe_projects_visual(self):
-        if self.project_view_data_cache != self.projects_file_visualize.read_file():
+        if self.project_view_data_cache != self.projects_file_visualize.read_file()[1]:
             self.projects_file_visualize.write_file(self.project_view_data_cache)
 
     # === Создание Глобального Проекта ===
@@ -149,6 +157,33 @@ class ProjectManager(SystemManager):
         self.project_data_cache["StructureData"]["GlobalProjectsData"].append(global_project_data)
         self.safe_projects()
 
+    def __append_new_visual_global_project(self, global_project_data: dict):
+        """
+        Вызывается из функции create_new_global_project()
+        :param global_project_data: получает сформированный словарь из функции __create_data_global_project(data: list)
+        :return: None ( Сохраняет данные функцией safe_data() )
+        """
+        self.project_view_data_cache["GlobalProjectsData"].append(global_project_data)
+        self.safe_projects_visual()
+
+    def __delete_global_project(self, gp_index: int):
+        self.project_data_cache["StructureData"]["GlobalProjectsData"].pop(gp_index)
+        self.safe_projects()
+
+    def __delete_visual_global_project(self, gp_index: int):
+        self.project_view_data_cache["GlobalProjectsData"].pop(gp_index)
+        self.safe_projects_visual()
+
+    def __rename_global_project(self, gp_index: int, gp_names: list[str]):
+        gp = self.project_data_cache["StructureData"]["GlobalProjectsData"][gp_index]
+        gp["GlobalProjectEnName"], gp["GlobalProjectSlugName"], gp["GlobalProjectRuName"] = gp_names
+        self.safe_projects()
+
+    def __rename_visual_global_project(self, gp_index: int, gp_names: list[str]):
+        gp = self.project_view_data_cache["GlobalProjectsData"][gp_index]
+        gp["GlobalProjectEnName"], gp["GlobalProjectSlugName"], gp["GlobalProjectRuName"] = gp_names
+        self.safe_projects_visual()
+
     def create_new_global_project(self, global_project_data: list):
         """
         :param global_project_data: [GlobalProjectEnName, SlugName, RuName]
@@ -156,13 +191,21 @@ class ProjectManager(SystemManager):
         """
         data = self.__create_data_global_project(global_project_data)
         self.__append_new_global_project(data)
+        self.__append_new_visual_global_project(data)
 
     def rename_global_project(self, global_project_name: str, new_global_project_names: list):
-        gp = self.get_global_project_by_name(global_project_name)
-        if gp is None:
+        gp_index = self.find_index_gp_by_ru_name(global_project_name)
+        self.__rename_global_project(gp_index, new_global_project_names)
+        self.__rename_visual_global_project(gp_index, new_global_project_names)
+
+    def delete_global_project(self, global_project_name: str):
+        gp_index = self.find_index_gp_by_ru_name(global_project_name)
+        print("0", gp_index)
+        if gp_index < 0:
             raise TypeError("Проект не найден")
-        gp["GlobalProjectEnName"], gp["GlobalProjectSlugName"], gp["GlobalProjectRuName"] = new_global_project_names
-        self.safe_projects()
+        print("1", gp_index, global_project_name)
+        self.__delete_global_project(gp_index)
+        self.__delete_visual_global_project(gp_index)
 
     # === Добавление Проекта в Глобальный проект ===
     def __create_data_project(self, global_project_name: str, project_data: list):
@@ -191,7 +234,8 @@ class ProjectManager(SystemManager):
         raise ValueError("Указанный Глобальный проект - не найден")
 
     def __append_new_project(self, global_project_id: int, project_data: dict):
-        self.project_data_cache["StructureData"]["GlobalProjectsData"][global_project_id - 1]["Projects"].append(project_data)
+        self.project_data_cache["StructureData"]["GlobalProjectsData"][global_project_id - 1]["Projects"].append(
+            project_data)
         self.safe_projects()
 
     def create_project(self, global_project_name: str, project_data: list):
@@ -246,7 +290,8 @@ class ProjectManager(SystemManager):
             return project_ids
 
     def get_projects_filter_gp_name(self, global_project_name, return_mod=0):
-        print("get_projects_filter_gp_name.gpn = " + f"{global_project_name}, {self.get_global_project_by_name(global_project_name)['id_GlobalProject']}")
+        print(
+            "get_projects_filter_gp_name.gpn = " + f"{global_project_name}, {self.get_global_project_by_name(global_project_name)['id_GlobalProject']}")
         return self.__get_projects_filter_gp_id(
             self.get_global_project_by_name(global_project_name)["GlobalProjectRuName"], return_mod=return_mod)
 
@@ -263,7 +308,6 @@ class ProjectManager(SystemManager):
             print(f'get_project_filter_projects_name_filter_gp_name.project = {project}')
 
         raise ValueError("Проект не найден")
-
 
 # if __name__ == "__main__":
 #     PROJECT_MANAGER = ProjectManager()

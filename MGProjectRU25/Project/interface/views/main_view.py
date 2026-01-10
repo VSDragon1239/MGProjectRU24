@@ -104,6 +104,7 @@ class MainUiView(QMainWindow, Ui_QMW1):
 
     def dialog_create_global_project(self):
         gp_name = GlobalProjectDialogView(self).get_name()
+        print(f"dialog_create_global_project.gp_name{gp_name}")
 
         if gp_name:
             return self.viewModel.create_global_project(gp_name)
