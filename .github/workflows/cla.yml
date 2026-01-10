@@ -1,0 +1,17 @@
+name: CLA Assistant
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  cla:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CLA Assistant
+        uses: contributor-assistant/github-action@v2
+        with:
+          path-to-cla-document: CONTRIBUTING.md
+          branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

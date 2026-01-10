@@ -1,0 +1,3 @@
+# Build / Distribution
+pyinstaller==6.8.0
+pyarmor==8.5.9

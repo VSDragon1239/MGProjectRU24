@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "types": {
+    "SystemWindowsManager": {
+      "ApplicableWords": [
+        ["Да", "Yes"],
+        ["Нет", "Не", "Not", "No", "Отмена"]
+      ],
+      "WinCast": [
+        { "phrases": ["сверни все окна", "показать рабочий стол", "show desktop"], "action": "plugins.desktop.actions.show_desktop", "args": {} },
+        { "phrases": ["переключись на окно", "switch window", "альт таб"], "action": "plugins.desktop.actions.switch_window_once", "args": {} },
+        { "phrases": ["закрой окно", "close window"], "action": "plugins.desktop.actions.close_active_window", "args": {} }
+      ],
+      "KeyCast": [
+        { "phrases": ["обнови страницу", "refresh page", "перезагрузи страницу"], "action": "plugins.desktop.actions.refresh_page", "args": {} }
+      ]
+    },
+
+    "FileManager": {
+      "Open": [
+        { "phrases": ["открой проводник", "open explorer"], "action": "plugins.desktop.actions.open_explorer", "args": {} },
+        { "phrases": ["перейди в папку загрузки", "папка загрузки", "open downloads"], "action": "plugins.desktop.actions.open_known_folder", "args": {"folder": "downloads"} },
+        { "phrases": ["перейди в папку видео", "папка видео", "open downloads"], "action": "plugins.desktop.actions.open_known_folder", "args": {"folder": "videos"} },
+        { "phrases": ["перейди в папку документы", "open documents"], "action": "plugins.desktop.actions.open_known_folder", "args": {"folder": "documents"} },
+        { "phrases": ["перейди на мой компьютер", "open pc"], "action": "plugins.desktop.actions.open_known_folder", "args": {"folder": "mycomputer"} },
+        { "phrases": ["перейди на рабочий стол", "open desktop"], "action": "plugins.desktop.actions.open_known_folder", "args": {"folder": "desktop"} }
+      ]
+    },
+
+    "Apps": {
+      "Control": [
+        { "phrases": ["закрой {name}", "close {name}"], "action": "plugins.desktop.actions.close_app", "args": {"name": "{name}"} },
+        { "phrases": ["переключись на {name}", "focus {name}"], "action": "plugins.desktop.actions.focus_app", "args": {"name": "{name}"} }
+      ]
+    },
+
+    "Web": {
+      "Open": [
+        { "phrases": ["открой сайт {query}", "open site {query}"], "action": "plugins.desktop.actions.open_site", "args": {"query": "{query}"} },
+        { "phrases": ["найди в интернете {query}", "search the web {query}"], "action": "plugins.desktop.actions.web_search", "args": {"query": "{query}"} },
+        { "phrases": ["найди на ютубе {query}", "найди видео {query}", "найди видео типа {query}", "поиск видео {query}",
+                      "поиск видео с названием {query}", "search the web {query}"], "action": "plugins.desktop.actions.web_search_youtube", "args": {"query": "{query}"} }
+      ]
+    },
+
+    "Audio": {
+      "Volume": [
+        { "phrases": ["сделай тише", "volume down"], "action": "plugins.desktop.actions.volume_down", "args": {"step": 0.05} },
+        { "phrases": ["сделай громче", "volume up"], "action": "plugins.desktop.actions.volume_up", "args": {"step": 0.05} },
+        { "phrases": ["выключи звук", "mute"], "action": "plugins.desktop.actions.volume_mute_toggle", "args": {} },
+        { "phrases": ["громкость {percent} процентов", "установи громкость на {percent} процентов", "звук {percent} процентов","установи звук на {percent} процентов", "set volume {percent}"], "action": "plugins.desktop.actions.volume_set", "args": {"percent": "{percent}"} }
+      ]
+    }
+  }
+}
