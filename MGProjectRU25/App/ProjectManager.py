@@ -195,12 +195,17 @@ class ProjectManager(SystemManager):
         self.safe_projects_visual()
 
     def __delete_project(self, gp_index: int, gpp_index: int):
+        print('__delete_project')
         self.project_data_cache["StructureData"]["GlobalProjectsData"][gp_index]["Projects"].pop(gpp_index)
         self.safe_projects()
 
     def __delete_visual_project(self, gp_index: int, gpp_index: int):
-        self.project_view_data_cache["GlobalProjectsData"][gp_index]["Projects"].pop(gpp_index)
-        self.safe_projects_visual()
+        print('__delete_visual_project')
+        try:
+            self.project_view_data_cache["GlobalProjectsData"][gp_index]["Projects"].pop(gpp_index)
+            self.safe_projects_visual()
+        except IndexError:
+            self.safe_projects_visual()
 
     def create_new_global_project(self, global_project_data: list):
         """
@@ -265,9 +270,11 @@ class ProjectManager(SystemManager):
         raise ValueError("Указанный Глобальный проект - не найден")
 
     def __append_new_project(self, gp_index: int, gp_project_data: dict):
-        self.project_data_cache["StructureData"]["GlobalProjectsData"][gp_index]["Projects"].append(
-            gp_project_data)
-        print("create_project", gp_project_data)
+        projects_list = self.project_data_cache["StructureData"]["GlobalProjectsData"][gp_index]["Projects"]
+        if gp_project_data not in projects_list:
+            projects_list.append(gp_project_data)
+        else:
+            print("Project already exists, skipping...")
         self.safe_projects()
 
     def __append_new_visual_project(self, gp_index: int, gp_project_data: dict):
@@ -275,9 +282,9 @@ class ProjectManager(SystemManager):
         if gp_project_data not in projects_list:
             projects_list.append(gp_project_data)
             print("create_visual_project", gp_project_data)
-            self.safe_projects_visual()
         else:
             print("Project already exists, skipping...")
+        self.safe_projects_visual()
 
     def create_project(self, global_project_name: str, gp_project_data: list):
         """
@@ -351,21 +358,3 @@ class ProjectManager(SystemManager):
             print(f'get_project_filter_projects_name_filter_gp_name.project = {project}')
 
         raise ValueError("Проект не найден")
-
-# if __name__ == "__main__":
-#     PROJECT_MANAGER = ProjectManager()
-#     PROJECT_MANAGER.pashalochka()
-# PROJECT_MANAGER.create_new_global_project(["Global Reversion Virtualization", "GRV", "Глобальная Реверсия Виртуализации"])
-# PROJECT_MANAGER.create_new_global_project(["Global Reversion Reality", "GRR", "Глобальная Реверсия Реальности"])
-# PROJECT_MANAGER.create_new_global_project(["Global Reversion Program", "GRP", "Глобальная Реверсия Программ"])
-# PROJECT_MANAGER.create_project("GRV", ["EquestriaVirtualReality", "EquusVR", "ЭквестрияVR"])
-# PROJECT_MANAGER.create_project("GRV", ["EquestriaRDaP", "EquusRDP", "Робо Дракон и Пони"])
-# PROJECT_MANAGER.create_project("GRV", ["VoxPlayProject", "VPP", "Проект Игры 'VoxPlay'"])
-# PROJECT_MANAGER.create_project("GRR", ["Fanfics", "FFB", "Фанфики"])
-# PROJECT_MANAGER.create_project("GRR", ["Memories", "MMS", "Воспоминания"])
-# PROJECT_MANAGER.create_project("GRR", ["ReversTerraria", "RST", "Реверсия Террарии"])
-# PROJECT_MANAGER.create_project("GRP", ["MGProject24", "MGP", "Главный Глобальный Проект"])
-# PROJECT_MANAGER.create_project("GRP", ["MGSD", "MGSDsl", "Глваный проект"])
-# PROJECT_MANAGER.create_project("GRP", ["TestProject", "TPP", "Тестовый Проект"])
-# # PROJECT_MANAGER.create_project("GRV", ["EquestriaVirtualReality", "EquusVR", "ЭквестрияVR"])
-# # PROJECT_MANAGER.print_structure_data()
