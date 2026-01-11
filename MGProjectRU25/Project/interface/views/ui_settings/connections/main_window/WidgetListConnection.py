@@ -64,7 +64,7 @@ class MainWindowUiViewWidgetListConnect(WidgetsConnecting):
         self._setup_context_menu(
             widget,
             rename_callback=lambda item, new_name: self.viewModel.rename_project(item.text(), new_name),
-            delete_callback=lambda item: self.viewModel.delete_global_project(item)
+            delete_callback=lambda item: self.viewModel.delete_project(item)
         )
 
     def list_widget_tools_list(self):

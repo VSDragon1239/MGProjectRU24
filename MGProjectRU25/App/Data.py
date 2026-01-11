@@ -106,6 +106,7 @@ PROJECTS_VISUAL = {
     "GlobalProjectsData": []
 }
 
+
 def get_main_modules():
     return {
         "Modules": [

@@ -55,6 +55,7 @@ class MainUiView(QMainWindow, Ui_QMW1):
     def __init__(self, model, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.setWindowIcon(QIcon(IMAGES_DIR + IMAGES_DIRS[11]))
 
         self.AICalibrationUiView = None
         self.ProjectManagerView = None
@@ -145,7 +146,10 @@ class MainUiView(QMainWindow, Ui_QMW1):
                         project_name = ProjectDialogView(self).get_name()
                         continue
                     break
-                return result_gp_c
+                try:
+                    return result_gp_c
+                except NameError:
+                    return None
         else:
             print("Создание проекта отменено")
 

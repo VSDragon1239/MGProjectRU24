@@ -16,7 +16,7 @@ else:
 # Корневая директория проекта (если нужно выше)
 PROJECT_ROOT = BASE_DIR.parent  #
 
-UI_DIR = str(BASE_DIR) + '/interface/views/ui_files/'
+UI_DIR = str(BASE_DIR).replace("\\", "/") + '/interface/views/ui_files/'
 
 UIS_DIRS = [
     "projects_manager",
@@ -31,10 +31,10 @@ PY_UIS_DIRS = [
 ]
 
 if getattr(sys, 'frozen', False):
-    RESOURCES_DIR = str(PROJECT_ROOT) + '/resources/'
+    RESOURCES_DIR = str(PROJECT_ROOT).replace("\\", "/") + '/resources/'
     BASE_PACKAGE = "resources"
 else:
-    RESOURCES_DIR = str(BASE_DIR) + '/interface/resources/'
+    RESOURCES_DIR = str(BASE_DIR).replace("\\", "/") + '/interface/resources/'
     BASE_PACKAGE = "Project.interface.resources"
 
 
@@ -57,11 +57,13 @@ IMAGES_DIRS = [
     "icon_4.png",
     "button_image_active.png",
     "button_image_hover.png",
-    "icon_app.png",
+    "main_icon.png",
 ]
 
 
 JURA = FONTS_DIR + "Jura.ttf"
+
+icon_path = os.path.join(IMAGES_DIR, IMAGES_DIRS[11])
 
 
 # PLUGINS_PATH = os.path.join(RESOURCES_DIR, "plugins")

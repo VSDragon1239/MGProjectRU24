@@ -174,6 +174,10 @@ class MainViewModel(QObject):
         self.model.model_manager("delete_global_project", global_project_name=select_gp_name)
         self.list_global_projects()
 
+    def delete_project(self, select_gpp_name):
+        self.model.model_manager("delete_project", global_project_name=self.selected_gp["GlobalProjectRuName"], project_name=select_gpp_name)
+        self.list_projects()
+
     def create_project(self, ru_gp_name, ru_project_name):
         if self.model.model_manager("create_project", global_project_name=ru_gp_name,
                                     project_name=ru_project_name) == -1:
