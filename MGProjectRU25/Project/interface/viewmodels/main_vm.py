@@ -173,6 +173,7 @@ class MainViewModel(QObject):
     def delete_global_project(self, select_gp_name):
         self.model.model_manager("delete_global_project", global_project_name=select_gp_name)
         self.list_global_projects()
+        self.widget_list_project.clear()
 
     def delete_project(self, select_gpp_name):
         self.model.model_manager("delete_project", global_project_name=self.selected_gp["GlobalProjectRuName"], project_name=select_gpp_name)

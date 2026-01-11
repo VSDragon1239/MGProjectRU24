@@ -264,29 +264,35 @@ class ProjectManager(SystemManager):
                 return global_project_id, new_project
         raise ValueError("Указанный Глобальный проект - не найден")
 
-    def __append_new_project(self, global_project_id: int, project_data: dict):
-        self.project_data_cache["StructureData"]["GlobalProjectsData"][global_project_id - 1]["Projects"].append(
-            project_data)
+    def __append_new_project(self, gp_index: int, gp_project_data: dict):
+        self.project_data_cache["StructureData"]["GlobalProjectsData"][gp_index]["Projects"].append(
+            gp_project_data)
+        print("create_project", gp_project_data)
         self.safe_projects()
 
     def __append_new_visual_project(self, gp_index: int, gp_project_data: dict):
-        self.project_view_data_cache["GlobalProjectsData"][gp_index]["Projects"].append(gp_project_data)
-        self.safe_projects_visual()
+        projects_list = self.project_view_data_cache["GlobalProjectsData"][gp_index]["Projects"]
+        if gp_project_data not in projects_list:
+            projects_list.append(gp_project_data)
+            print("create_visual_project", gp_project_data)
+            self.safe_projects_visual()
+        else:
+            print("Project already exists, skipping...")
 
-    def create_project(self, global_project_name: str, project_data: list):
+    def create_project(self, global_project_name: str, gp_project_data: list):
         """
         :param global_project_name: "Name"
-        :param project_data: [ "ProjectEnName", "ProjectSlugName", "ProjectRuName" ]
+        :param gp_project_data: [ "ProjectEnName", "ProjectSlugName", "ProjectRuName" ]
         :return:
         """
         try:
-            data = self.__create_data_project(global_project_name, project_data)
+            data = self.__create_data_project(global_project_name, gp_project_data)
         except ValueError:
             return -1
+        print("create_project")
         gp_index = self.find_index_gp_by_ru_name(global_project_name)
-        select_global_project_id = data[0]
-        project = data[1]
-        self.__append_new_project(select_global_project_id, project)
+        project: dict = data[1]
+        self.__append_new_project(gp_index, project)
         self.__append_new_visual_project(gp_index, project)
 
     # def rename_project_0(self, global_project_name, project_name: str, new_name: list):
